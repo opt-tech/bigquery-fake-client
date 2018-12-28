@@ -1,15 +1,29 @@
 import Dependencies._
+import Helpers._
 
-lazy val root = (project in file(".")).
-  settings(
-    inThisBuild(List(
-      crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.4"),
-      licenses += "Apache 2" -> url("https://raw.githubusercontent.com/opt-tech/bigquery-fake-driver/master/LICENSE"),
-      organization := "jp.ne.opt",
-      scalaVersion := "2.12.5",
-      version      := "0.1.0-SNAPSHOT"
-    )),
-    name := "bigquery-fake-driver",
-    libraryDependencies += scalaTest % Test,
-    publishMavenStyle := true
-  )
+val scala210 = "2.10.7"
+
+scalaVersion := scala210
+
+crossScalaVersions := Seq(scala210, "2.11.12", "2.12.4")
+
+name := "bigquery-fake-client"
+
+licenses += "Apache 2" -> url("https://raw.githubusercontent.com/opt-tech/bigquery-fake-client/master/LICENSE")
+
+organization := "jp.ne.opt"
+
+version := "0.1.0-SNAPSHOT"
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-encoding", "UTF-8",
+  "-feature"
+)
+
+libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
+  (if (scalaVersion.value.startsWith("2.10")) Nil else compileScope(parser)) ++
+  testScope(postgres, h2, scalatest) ++
+  providedScope(postgres, h2))
+
+publishMavenStyle := true
