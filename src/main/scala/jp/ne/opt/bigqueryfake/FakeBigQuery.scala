@@ -16,7 +16,8 @@ class FakeBigQuery(val conn: Connection,
   override def create(datasetInfo: DatasetInfo, options: BigQuery.DatasetOption*): Dataset =
     FakeDataset(this, datasetInfo.getDatasetId).create()
 
-  override def create(tableInfo: TableInfo, options: BigQuery.TableOption*): Table = ???
+  override def create(tableInfo: TableInfo, options: BigQuery.TableOption*): Table =
+    FakeTable(this, tableInfo.getTableId).create(tableInfo.getDefinition[TableDefinition])
 
   override def create(jobInfo: JobInfo, options: JobOption*): Job = ???
 
@@ -38,22 +39,29 @@ class FakeBigQuery(val conn: Connection,
   override def delete(datasetId: DatasetId, options: BigQuery.DatasetDeleteOption*): Boolean =
     FakeDataset(this, datasetId).delete()
 
-  override def delete(datasetId: String, tableId: String): Boolean = ???
+  override def delete(datasetId: String, tableId: String): Boolean =
+    delete(TableId.of(datasetId, tableId))
 
-  override def delete(tableId: TableId): Boolean = ???
+  override def delete(tableId: TableId): Boolean =
+    FakeTable(this, tableId).delete()
 
   override def update(datasetInfo: DatasetInfo, options: BigQuery.DatasetOption*): Dataset =
     FakeDataset(this, datasetInfo.getDatasetId).update()
 
-  override def update(tableInfo: TableInfo, options: BigQuery.TableOption*): Table = ???
+  override def update(tableInfo: TableInfo, options: BigQuery.TableOption*): Table =
+    FakeTable(this, tableInfo.getTableId).update()
 
-  override def getTable(datasetId: String, tableId: String, options: BigQuery.TableOption*): Table = ???
+  override def getTable(datasetId: String, tableId: String, options: BigQuery.TableOption*): Table =
+    getTable(TableId.of(datasetId, tableId))
 
-  override def getTable(tableId: TableId, options: BigQuery.TableOption*): Table = ???
+  override def getTable(tableId: TableId, options: BigQuery.TableOption*): Table =
+    FakeTable(this, tableId).get.orNull
 
-  override def listTables(datasetId: String, options: BigQuery.TableListOption*): Page[Table] = ???
+  override def listTables(datasetId: String, options: BigQuery.TableListOption*): Page[Table] =
+    listTables(DatasetId.of(datasetId), options: _*)
 
-  override def listTables(datasetId: DatasetId, options: BigQuery.TableListOption*): Page[Table] = ???
+  override def listTables(datasetId: DatasetId, options: BigQuery.TableListOption*): Page[Table] =
+    new PageImpl[Table](null, null, FakeTable.list(this, datasetId).asJava)
 
   override def insertAll(request: InsertAllRequest): InsertAllResponse = ???
 
