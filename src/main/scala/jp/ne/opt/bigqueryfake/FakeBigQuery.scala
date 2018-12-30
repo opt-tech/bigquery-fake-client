@@ -19,7 +19,13 @@ class FakeBigQuery(val conn: Connection,
   override def create(tableInfo: TableInfo, options: BigQuery.TableOption*): Table =
     FakeTable(this, tableInfo.getTableId).create(tableInfo.getDefinition[TableDefinition])
 
-  override def create(jobInfo: JobInfo, options: JobOption*): Job = ???
+  override def create(jobInfo: JobInfo, options: BigQuery.JobOption*): Job =
+    jobInfo.getConfiguration[JobConfiguration] match {
+      case config: LoadJobConfiguration => {
+        new FakeLoadJob(this, config).execute()
+      }
+      case jobConfig => throw new UnsupportedOperationException(s"Unsupported job configuration type: ${jobConfig}")
+    }
 
   override def getDataset(datasetId: String, options: BigQuery.DatasetOption*): Dataset =
     getDataset(DatasetId.of(datasetId), options: _*)
@@ -63,9 +69,11 @@ class FakeBigQuery(val conn: Connection,
   override def listTables(datasetId: DatasetId, options: BigQuery.TableListOption*): Page[Table] =
     new PageImpl[Table](null, null, FakeTable.list(this, datasetId).asJava)
 
-  override def insertAll(request: InsertAllRequest): InsertAllResponse =
+  override def insertAll(request: InsertAllRequest): InsertAllResponse = {
     new RowInserter(this, request.getTable)
       .insert(request.getRows.asScala.map(_.getContent.asScala.toMap))
+    FakeBuilder.newInsertAllResponse(Map.empty)
+  }
 
   override def listTableData(datasetId: String, tableId: String, options: BigQuery.TableDataListOption*): TableResult = ???
 

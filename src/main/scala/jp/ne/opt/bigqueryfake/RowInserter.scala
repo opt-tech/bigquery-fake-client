@@ -16,7 +16,7 @@ class RowInserter(fakeBigQuery: FakeBigQuery, tableId: TableId) {
   val partitioned = tableDefinition.getTimePartitioning != null &&
     tableDefinition.getTimePartitioning.getType == TimePartitioning.Type.DAY
 
-  def insert(rows: Seq[Map[String, Any]]): InsertAllResponse = {
+  def insert(rows: Seq[Map[String, Any]]): Int = {
     if (fakeTable.partitionAwareness.partition.isDefined && !partitioned)
       throw new BigQueryException(400, s"Partition decorator is given for non-partitioned table: ${fakeTable.tableName}")
 
@@ -48,12 +48,9 @@ class RowInserter(fakeBigQuery: FakeBigQuery, tableId: TableId) {
       }
       preparedStatement.addBatch()
     }
-    val result = Try[Array[Int]] { preparedStatement.executeBatch() }
+    val result = preparedStatement.executeBatch()
     preparedStatement.close()
-    FakeBuilder.newInsertAllResponse(result match {
-      case Success(_) => Map.empty
-      case Failure(e) => Map(0L -> Seq(new BigQueryError("Faild to insert rows", e.getStackTrace.mkString("\n"), e.getMessage)))
-    })
+    result.reduce(_ + _)
   }
 }
 
