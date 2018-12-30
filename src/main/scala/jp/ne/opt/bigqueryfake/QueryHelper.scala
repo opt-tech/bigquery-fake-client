@@ -31,4 +31,16 @@ class QueryHelper(val conn: Connection) {
     statement.close()
     result
   }
+
+  def listValues(sql: String): Seq[Seq[String]] = {
+    val statement = conn.createStatement()
+    val resultSet = statement.executeQuery(sql)
+    val columnCount = resultSet.getMetaData.getColumnCount
+    val result = Iterator.continually { resultSet }.takeWhile { _.next() }.map { row =>
+      1 to columnCount map { i => row.getObject(i, classOf[String]) }
+    }.toList
+    resultSet.close()
+    statement.close()
+    result
+  }
 }

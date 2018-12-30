@@ -30,7 +30,7 @@ case class FakeTable(fakeBigQuery: FakeBigQuery, tableId: TableId) {
     val columns = tableDefinition.getSchema.getFields.asScala.map { field =>
       val fieldType = FieldType.of(field.getType)
       s"${field.getName} ${fieldType.sqlType} ${if (field.getMode == Mode.REQUIRED) "NOT NULL" else "NULL"}"
-    } ++ (if (partitioning) Seq(s"${FakeTable.PartitionColumnName} timestamp NOT NULL") else Nil)
+    } ++ (if (partitioning) Seq(s"${FakeTable.PartitionColumnName} timestamp NULL") else Nil)
 
     val statment =
       s"""
@@ -63,7 +63,7 @@ case class FakeTable(fakeBigQuery: FakeBigQuery, tableId: TableId) {
       }
 
   def update(): Table = // Update operation is not supported, do nothing
-    get.getOrElse(throw new BigQueryException(404, s"Dataset not found: ${tableName}"))
+    get.getOrElse(throw new BigQueryException(404, s"Table not found: ${tableName}"))
 }
 
 object FakeTable {

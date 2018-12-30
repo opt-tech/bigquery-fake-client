@@ -63,7 +63,9 @@ class FakeBigQuery(val conn: Connection,
   override def listTables(datasetId: DatasetId, options: BigQuery.TableListOption*): Page[Table] =
     new PageImpl[Table](null, null, FakeTable.list(this, datasetId).asJava)
 
-  override def insertAll(request: InsertAllRequest): InsertAllResponse = ???
+  override def insertAll(request: InsertAllRequest): InsertAllResponse =
+    new RowInserter(this, request.getTable)
+      .insert(request.getRows.asScala.map(_.getContent.asScala.toMap))
 
   override def listTableData(datasetId: String, tableId: String, options: BigQuery.TableDataListOption*): TableResult = ???
 
