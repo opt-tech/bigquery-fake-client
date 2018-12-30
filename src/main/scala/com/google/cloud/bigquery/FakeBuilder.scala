@@ -8,7 +8,7 @@ object FakeBuilder {
   def newDatasetBuilder(bigQuery: BigQuery, datasetId: DatasetId): Dataset.Builder =
     new Dataset.Builder(bigQuery, datasetId)
 
-  def newFakeJob(bigQuery: BigQuery, jobInfo: JobInfo): Job =
+  def newFakeJob(bigQuery: BigQuery, jobInfo: JobInfo, queryResults: scala.Option[TableResult] = None): Job =
     new Job(bigQuery, new JobInfo.BuilderImpl(jobInfo).setStatus(new JobStatus(JobStatus.State.DONE)).asInstanceOf[JobInfo.BuilderImpl]) {
       override def isDone: Boolean = true
 
@@ -16,6 +16,9 @@ object FakeBuilder {
         // Do nothing, because all queries are synchronous in JDBC
         this
       }
+
+      override def getQueryResults(options: BigQuery.QueryResultsOption*): TableResult =
+        queryResults.getOrElse(super.getQueryResults(options: _*))
     }
 
   def newInsertAllResponse(errors: Map[Long, Seq[BigQueryError]]): InsertAllResponse =

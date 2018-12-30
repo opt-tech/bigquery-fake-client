@@ -14,7 +14,7 @@ import scala.util.{Failure, Success}
 class FakeLoadJob(fakeBigQuery: FakeBigQuery, config: LoadJobConfiguration) {
   val fakeTable = FakeTable(fakeBigQuery, config.getDestinationTable)
 
-  def execute(): Job = {
+  def create(): Job = {
     if (config.getFormat != FormatOptions.json().getType)
       throw new UnsupportedOperationException(s"Unsupported load format: ${config.getFormat}")
 

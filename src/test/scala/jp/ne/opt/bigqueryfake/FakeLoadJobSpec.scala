@@ -16,7 +16,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with DBFixture {
     test(fakeTable)
   }
 
-  describe("execute") {
+  describe("create") {
     it("works with json") { conn =>
       val schema = Schema.of(
         Field.of("text", LegacySQLTypeName.STRING),
@@ -33,7 +33,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with DBFixture {
       withFakeTable(conn, tableDefinition) { fakeTable =>
         fakeTable.fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
         val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.json()).build
-        val fakeJob = new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).execute()
+        val fakeJob = new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).create()
         fakeJob.getStatus.getState mustBe JobStatus.State.DONE
         fakeTable.fakeBigQuery.queryHelper.listValues(
           s"SELECT text, num FROM ${fakeTable.datasetName}.${fakeTable.tableName}"
@@ -55,7 +55,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with DBFixture {
       withFakeTable(conn, tableDefinition) { fakeTable =>
         fakeTable.fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
         val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.csv()).build
-        an [UnsupportedOperationException] mustBe thrownBy { new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).execute() }
+        an [UnsupportedOperationException] mustBe thrownBy { new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).create() }
       }
     }
 
@@ -73,7 +73,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with DBFixture {
       withFakeTable(conn, tableDefinition) { fakeTable =>
         fakeTable.fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
         val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.json()).build
-        an [BigQueryException] mustBe thrownBy { new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).execute() }
+        an [BigQueryException] mustBe thrownBy { new FakeLoadJob(fakeTable.fakeBigQuery, loadJobConfiguration).create() }
       }
     }
   }

@@ -22,7 +22,10 @@ class FakeBigQuery(val conn: Connection,
   override def create(jobInfo: JobInfo, options: BigQuery.JobOption*): Job =
     jobInfo.getConfiguration[JobConfiguration] match {
       case config: LoadJobConfiguration => {
-        new FakeLoadJob(this, config).execute()
+        new FakeLoadJob(this, config).create()
+      }
+      case config: QueryJobConfiguration => {
+        new FakeQueryJob(this, config).create()
       }
       case jobConfig => throw new UnsupportedOperationException(s"Unsupported job configuration type: ${jobConfig}")
     }
@@ -93,9 +96,11 @@ class FakeBigQuery(val conn: Connection,
 
   override def cancel(jobId: JobId): Boolean = ???
 
-  override def query(configuration: QueryJobConfiguration, options: JobOption*): TableResult = ???
+  override def query(configuration: QueryJobConfiguration, options: JobOption*): TableResult =
+    query(configuration, null: JobId, options: _*)
 
-  override def query(configuration: QueryJobConfiguration, jobId: JobId, options: JobOption*): TableResult = ???
+  override def query(configuration: QueryJobConfiguration, jobId: JobId, options: JobOption*): TableResult =
+    new FakeQueryJob(this, configuration).fetchResult()
 
   override def getQueryResults(jobId: JobId, options: BigQuery.QueryResultsOption*): QueryResponse = ???
 
