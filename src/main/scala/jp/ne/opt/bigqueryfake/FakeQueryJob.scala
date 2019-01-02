@@ -6,6 +6,7 @@ import java.util.Base64
 
 import com.google.cloud.PageImpl
 import com.google.cloud.bigquery._
+import jp.ne.opt.bigqueryfake.rewriter.QueryRewriter
 
 import scala.collection.JavaConverters._
 
@@ -20,14 +21,7 @@ class FakeQueryJob(fakeBigQuery: FakeBigQuery, config: QueryJobConfiguration) {
   }
 
   private def query(): (Schema, Seq[FieldValueList]) = {
-    val query = config.getQuery.
-      replaceAll("`", "\"").
-      replaceAll("projectId.datasetName.", "").
-      replaceAll("FLOAT64", "NUMERIC").
-      replaceAll("TIMESTAMP\\(", "(").
-      replaceAll("(?i)\\sasc(\\s|$)", " ASC NULLS FIRST$1").
-      replaceAll("(?i)\\sdesc(\\s|$)", " DESC NULLS LAST$1").
-      replaceAll("(?i)regexp_extract\\(", "SUBSTRING(")
+    val query = new QueryRewriter(config.getQuery).rewrite()
 
     val preparedStatement = fakeBigQuery.conn.prepareStatement(query)
     config.getPositionalParameters.asScala.zipWithIndex.foreach {

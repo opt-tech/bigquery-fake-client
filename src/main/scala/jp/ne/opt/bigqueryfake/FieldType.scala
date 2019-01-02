@@ -44,7 +44,7 @@ object FieldType {
   case object Numeric extends FieldType(LegacySQLTypeName.NUMERIC, "DECIMAL", Seq(NUMERIC, DECIMAL)) {
     def bind(rawValue: String, statement: PreparedStatement, parameterIndex: Int): Unit = statement.setBigDecimal(parameterIndex, new BigDecimal(rawValue))
   }
-  case object Boolean extends FieldType(LegacySQLTypeName.BOOLEAN, "BOOLEAN", Seq(BOOLEAN)) {
+  case object Boolean extends FieldType(LegacySQLTypeName.BOOLEAN, "BOOLEAN", Seq(BOOLEAN, BIT)) {
     def bind(rawValue: String, statement: PreparedStatement, parameterIndex: Int): Unit = statement.setBoolean(parameterIndex, java.lang.Boolean.valueOf(rawValue))
   }
   case object Timestamp extends FieldType(LegacySQLTypeName.TIMESTAMP, "TIMESTAMP", Seq(TIMESTAMP)) with DateTimeParser {
