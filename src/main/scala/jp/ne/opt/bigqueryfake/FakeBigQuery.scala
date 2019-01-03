@@ -3,6 +3,7 @@ package jp.ne.opt.bigqueryfake
 import java.sql.Connection
 
 import com.google.api.gax.paging.Page
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.PageImpl
 import com.google.cloud.bigquery.BigQuery.JobOption
 import com.google.cloud.bigquery._
@@ -10,9 +11,10 @@ import com.google.cloud.storage.Storage
 
 import scala.collection.JavaConverters._
 
-class FakeBigQuery(val conn: Connection,
-                   val storage: Storage = new FakeStorage,
-                   val options: BigQueryOptions = BigQueryOptions.newBuilder().setProjectId("fake").build()) extends BigQuery {
+class FakeBigQuery(val options: FakeBigQueryOptions) extends BigQuery {
+  val conn: Connection = options.connection
+  val storage: Storage = options.storage
+
   override def create(datasetInfo: DatasetInfo, options: BigQuery.DatasetOption*): Dataset =
     FakeDataset(this, datasetInfo.getDatasetId).create()
 
@@ -108,7 +110,11 @@ class FakeBigQuery(val conn: Connection,
 
   override def writer(jobId: JobId, writeChannelConfiguration: WriteChannelConfiguration): TableDataWriteChannel = ???
 
-  override def getOptions: BigQueryOptions = options
+  override def getOptions: BigQueryOptions =
+    BigQueryOptions.newBuilder()
+      .setProjectId(options.projectId)
+      .setCredentials(GoogleCredentials.newBuilder().build())
+      .build()
 
   private[bigqueryfake] val queryHelper = new QueryHelper(conn)
 }

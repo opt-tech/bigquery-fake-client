@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
 import java.{lang, util}
 
 import com.google.api.gax.paging.Page
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage._
 import com.google.cloud.{Policy, ReadChannel, WriteChannel}
 import com.google.common.io.ByteStreams
@@ -138,5 +139,9 @@ class FakeStorage extends Storage {
 
   override def getServiceAccount(projectId: String): ServiceAccount = ???
 
-  override def getOptions: StorageOptions = StorageOptions.newBuilder().setProjectId("TODO").build() // TODO
+  override def getOptions: StorageOptions =
+    StorageOptions.newBuilder()
+      .setProjectId("bigqueryfake")
+      .setCredentials(GoogleCredentials.newBuilder().build())
+      .build()
 }

@@ -1,9 +1,9 @@
 package jp.ne.opt.bigqueryfake
 
-import org.scalatest.fixture
+import org.scalatest.FunSpec
 
-class FakeBigQuerySpec extends fixture.FunSpec with DBFixture {
-  it("can be instantiated") { conn =>
-    new FakeBigQuery(conn)
+class FakeBigQuerySpec extends FunSpec {
+  it("can be instantiated") {
+    new FakeBigQuery(FakeBigQueryOptions.newBuilder.build())
   }
 }

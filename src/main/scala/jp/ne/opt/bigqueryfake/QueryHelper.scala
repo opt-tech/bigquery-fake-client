@@ -37,10 +37,19 @@ class QueryHelper(val conn: Connection) {
     val resultSet = statement.executeQuery(sql)
     val columnCount = resultSet.getMetaData.getColumnCount
     val result = Iterator.continually { resultSet }.takeWhile { _.next() }.map { row =>
-      1 to columnCount map { i => row.getObject(i, classOf[String]) }
+      1 to columnCount map { i =>
+        Option(row.getObject(i)).map(_.toString).orNull
+      }
     }.toList
     resultSet.close()
     statement.close()
     result
   }
+
+  def useCompatibleOneOf(h2Statement: String, postgresStatement: String): String =
+    conn match {
+      case _: org.h2.jdbc.JdbcConnection => h2Statement
+      case _: org.postgresql.PGConnection => postgresStatement
+      case _ => throw new UnsupportedOperationException(s"Unsupported JDBC connection: $conn")
+    }
 }

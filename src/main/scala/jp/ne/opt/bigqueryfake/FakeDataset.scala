@@ -28,6 +28,6 @@ case class FakeDataset(fakeBigQuery: FakeBigQuery, datasetId: DatasetId) {
 object FakeDataset {
   def list(fakeBigQuery: FakeBigQuery): Seq[Dataset] =
     fakeBigQuery.queryHelper
-      .list(s"SELECT schema_name FROM INFORMATION_SCHEMA.schemata WHERE schema_name NOT IN ('INFORMATION_SCHEMA', 'PUBLIC');")
+      .list(s"SELECT schema_name FROM INFORMATION_SCHEMA.schemata WHERE LOWER(schema_name) NOT IN ('information_schema', 'public') AND schema_name NOT LIKE 'pg_%';")
       .map(schema => FakeBuilder.newDatasetBuilder(fakeBigQuery, DatasetId.of(schema)).build())
 }
