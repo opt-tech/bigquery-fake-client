@@ -13,16 +13,31 @@ class FakeBigQueryOptions(builder: FakeBigQueryOptions.Builder) {
   }
   val storage: Storage = Option(builder.storage).getOrElse(new FakeStorage)
   val projectId: String = builder.projectId
+
+  def getService: FakeBigQuery = new FakeBigQuery(this)
 }
 
 object FakeBigQueryOptions {
   class Builder {
-    @BeanProperty
-    var connection: Connection = _
-    @BeanProperty
-    var storage: Storage = _
-    @BeanProperty
-    var projectId: String = "bigqueryfake"
+    private[bigqueryfake] var connection: Connection = _
+    private[bigqueryfake] var storage: Storage = _
+    private[bigqueryfake] var projectId: String = "bigqueryfake"
+
+    def setConnection(connection: Connection): Builder = {
+      this.connection = connection
+      this
+    }
+
+    def setStorage(storage: Storage): Builder = {
+      this.storage = storage
+      this
+    }
+
+    def setProjectId(projectId: String): Builder = {
+      this.projectId = projectId
+      this
+    }
+
     def build(): FakeBigQueryOptions = new FakeBigQueryOptions(this)
   }
 
