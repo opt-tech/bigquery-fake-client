@@ -1,17 +1,24 @@
 language: scala
 
+scala:
+  - 2.10.7
+  - 2.11.12
+  - 2.12.8
+
+jdk:
+  - openjdk8
+
 matrix:
   include:
-  - scala: 2.10.6
-    jdk: openjdk7
-  - scala: 2.10.6
-    jdk: openjdk8
-  - scala: 2.11.8
-    jdk: openjdk7
-  - scala: 2.11.8
-    jdk: openjdk8
-  - scala: 2.12.3
-    jdk: openjdk8
+    - scala: 2.12.8
+      jdk: openjdk8
+      env: POSTGRES_URL=jdbc:postgresql://127.0.0.1:5432/bigqueryfake?user=postgres
+
+before_script:
+  - psql -c 'create database bigqueryfake;' -U postgres
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
+
+addons:
+  postgresql: 9.6
