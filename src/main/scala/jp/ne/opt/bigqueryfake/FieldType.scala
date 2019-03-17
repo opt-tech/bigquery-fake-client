@@ -29,7 +29,7 @@ trait DateTimeParser {
 }
 
 object FieldType {
-  case object Byte extends FieldType(LegacySQLTypeName.BYTES, "BYTEA", Seq(BIT, BINARY, VARBINARY, LONGVARBINARY, BLOB)) {
+  case object Byte extends FieldType(LegacySQLTypeName.BYTES, "BYTEA", Seq(BINARY, VARBINARY, LONGVARBINARY, BLOB)) {
     def bind(rawValue: String, statement: PreparedStatement, parameterIndex: Int): Unit = statement.setString(parameterIndex, rawValue)
   }
   case object String extends FieldType(LegacySQLTypeName.STRING, "VARCHAR(65536)", Seq(CHAR, VARCHAR, LONGVARCHAR, CLOB, NCHAR, NVARCHAR, LONGNVARCHAR, NCLOB)) {
@@ -44,7 +44,7 @@ object FieldType {
   case object Numeric extends FieldType(LegacySQLTypeName.NUMERIC, "DECIMAL", Seq(NUMERIC, DECIMAL)) {
     def bind(rawValue: String, statement: PreparedStatement, parameterIndex: Int): Unit = statement.setBigDecimal(parameterIndex, new BigDecimal(rawValue))
   }
-  case object Boolean extends FieldType(LegacySQLTypeName.BOOLEAN, "BOOLEAN", Seq(BOOLEAN)) {
+  case object Boolean extends FieldType(LegacySQLTypeName.BOOLEAN, "BOOLEAN", Seq(BIT, BOOLEAN)) {
     def bind(rawValue: String, statement: PreparedStatement, parameterIndex: Int): Unit = statement.setBoolean(parameterIndex, java.lang.Boolean.valueOf(rawValue))
   }
   case object Timestamp extends FieldType(LegacySQLTypeName.TIMESTAMP, "TIMESTAMP", Seq(TIMESTAMP)) with DateTimeParser {

@@ -63,5 +63,19 @@ class RowInserterSpec extends fixture.FunSpec with MustMatchers with ServiceFixt
         }
       }
     }
+
+    it("works for boolean") { fakeBigQuery =>
+      val schema = Schema.of(
+        Field.of("bool", LegacySQLTypeName.BOOLEAN)
+      )
+      val tableDefinition = StandardTableDefinition.newBuilder.setSchema(schema).build
+      withFakeTable(fakeBigQuery, tableDefinition) { fakeTable =>
+        val rowInserter = new RowInserter(fakeBigQuery, fakeTable.tableId)
+        rowInserter.insert(Seq(Map("bool" -> true), Map("bool" -> false)))
+        fakeBigQuery.queryHelper.list(
+          s"SELECT bool FROM ${fakeTable.datasetName}.${fakeTable.tableName}"
+        ).toSet mustBe Set("true", "false")
+      }
+    }
   }
 }

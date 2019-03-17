@@ -141,6 +141,8 @@ class RewriteHandler extends SelectVisitor
     castExpression.getLeftExpression.accept(this)
     castExpression.getType.getDataType.toLowerCase match {
       case "float64" => castExpression.getType.setDataType("NUMERIC")
+      case "string" => castExpression.getType.setDataType("VARCHAR")
+      case _ =>
     }
   }
 
@@ -233,11 +235,6 @@ class RewriteHandler extends SelectVisitor
 
   def visit(function: Function): Unit = {
     function.getName.toLowerCase match {
-      case "date" =>
-        function.setName("TRUNC")
-        val parameters = function.getParameters.getExpressions.asScala
-        parameters.append(new StringValue("'date'"))
-        function.setParameters(new ExpressionList(parameters.asJava))
       case "nvl" =>
         function.setName("COALESCE")
       case "regexp_extract" =>

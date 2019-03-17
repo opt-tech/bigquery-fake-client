@@ -13,7 +13,7 @@ class QueryHelper(val conn: Connection) {
     val statement = conn.createStatement()
     val resultSet = statement.executeQuery(sql)
     val result = if (resultSet.next())
-      Some(resultSet.getObject(1, classOf[String]))
+      Some(resultSet.getObject(1).toString)
     else
       None
     resultSet.close()
@@ -25,7 +25,7 @@ class QueryHelper(val conn: Connection) {
     val statement = conn.createStatement()
     val resultSet = statement.executeQuery(sql)
     val result = Iterator.continually { resultSet }.takeWhile { _.next() }.map { row =>
-      row.getObject(1, classOf[String])
+      row.getObject(1).toString
     }.toList
     resultSet.close()
     statement.close()

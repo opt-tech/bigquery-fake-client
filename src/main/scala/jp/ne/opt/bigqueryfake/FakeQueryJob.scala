@@ -21,7 +21,7 @@ class FakeQueryJob(fakeBigQuery: FakeBigQuery, config: QueryJobConfiguration) {
   }
 
   private def query(): (Schema, Seq[FieldValueList]) = {
-    val query = new QueryRewriter(config.getQuery).rewrite()
+    val query = new QueryRewriter(fakeBigQuery.options.rewriteMode).rewrite(config.getQuery)
 
     val preparedStatement = fakeBigQuery.conn.prepareStatement(query)
     config.getPositionalParameters.asScala.zipWithIndex.foreach {
