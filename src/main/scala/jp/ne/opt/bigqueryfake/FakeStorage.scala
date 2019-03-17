@@ -23,6 +23,8 @@ class FakeStorage extends Storage {
     FakeBuilder.newBlob(this, blobInfo)
   }
 
+  override def create(blobInfo: BlobInfo, content: Array[Byte], offset: Int, length: Int, options: Storage.BlobTargetOption*): Blob = ???
+
   override def create(blobInfo: BlobInfo, content: InputStream, options: Storage.BlobWriteOption*): Blob =
     create(blobInfo, ByteStreams.toByteArray(content), FakeBuilder.buildTargetOptions(options): _*)
 

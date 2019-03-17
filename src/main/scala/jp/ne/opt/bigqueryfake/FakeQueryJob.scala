@@ -1,6 +1,6 @@
 package jp.ne.opt.bigqueryfake
 
-import java.sql.{ResultSet, ResultSetMetaData}
+import java.sql.ResultSet
 import java.time.ZoneOffset
 import java.util.Base64
 

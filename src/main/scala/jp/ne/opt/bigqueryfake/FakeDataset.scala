@@ -5,7 +5,7 @@ import com.google.cloud.bigquery.{BigQueryException, Dataset, DatasetId, FakeBui
 import scala.util.Try
 
 case class FakeDataset(fakeBigQuery: FakeBigQuery, datasetId: DatasetId) {
-  val datasetName = datasetId.getDataset
+  private val datasetName: String = datasetId.getDataset
 
   def create(): Dataset = {
     fakeBigQuery.queryHelper.execute(s"CREATE SCHEMA IF NOT EXISTS $datasetName;")

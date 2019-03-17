@@ -1,7 +1,7 @@
 package jp.ne.opt.bigqueryfake
 
 import com.google.cloud.bigquery.Field.Mode
-import com.google.cloud.bigquery.{BigQueryException, DatasetId, FakeBuilder, Field, Schema, StandardTableDefinition, Table, TableDefinition, TableId, TableInfo, TimePartitioning}
+import com.google.cloud.bigquery.{BigQueryException, DatasetId, FakeBuilder, Field, Schema, StandardTableDefinition, Table, TableDefinition, TableId, TimePartitioning}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -63,7 +63,7 @@ case class FakeTable(fakeBigQuery: FakeBigQuery, tableId: TableId) {
       }
 
   def update(): Table = // Update operation is not supported, do nothing
-    get.getOrElse(throw new BigQueryException(404, s"Table not found: ${tableName}"))
+    get.getOrElse(throw new BigQueryException(404, s"Table not found: $tableName"))
 }
 
 object FakeTable {

@@ -4,7 +4,7 @@ import com.google.cloud.bigquery._
 import org.scalatest.{MustMatchers, fixture}
 
 class RowInserterSpec extends fixture.FunSpec with MustMatchers with ServiceFixture {
-  def withFakeTable(fakeBigQuery: FakeBigQuery, tableDefinition: TableDefinition)(test: FakeTable => Any) {
+  def withFakeTable(fakeBigQuery: FakeBigQuery, tableDefinition: TableDefinition)(test: FakeTable => Any): Unit = {
     fakeBigQuery.queryHelper.execute("CREATE SCHEMA IF NOT EXISTS bigqueryfake;")
     val fakeTable = new FakeTable(fakeBigQuery, TableId.of("bigqueryfake", "test"))
     fakeTable.create(tableDefinition)

@@ -18,7 +18,7 @@ class FakeLoadJob(fakeBigQuery: FakeBigQuery, config: LoadJobConfiguration) {
     if (config.getFormat != FormatOptions.json().getType)
       throw new UnsupportedOperationException(s"Unsupported load format: ${config.getFormat}")
 
-    val table = fakeTable.get.getOrElse {
+    fakeTable.get.getOrElse {
       config.getCreateDisposition match {
         case CreateDisposition.CREATE_IF_NEEDED =>
           val definition = StandardTableDefinition.newBuilder().

@@ -23,13 +23,11 @@ class FakeBigQuery(val options: FakeBigQueryOptions) extends BigQuery {
 
   override def create(jobInfo: JobInfo, options: BigQuery.JobOption*): Job =
     jobInfo.getConfiguration[JobConfiguration] match {
-      case config: LoadJobConfiguration => {
+      case config: LoadJobConfiguration =>
         new FakeLoadJob(this, config).create()
-      }
-      case config: QueryJobConfiguration => {
+      case config: QueryJobConfiguration =>
         new FakeQueryJob(this, config).create()
-      }
-      case jobConfig => throw new UnsupportedOperationException(s"Unsupported job configuration type: ${jobConfig}")
+      case jobConfig => throw new UnsupportedOperationException(s"Unsupported job configuration type: $jobConfig")
     }
 
   override def getDataset(datasetId: String, options: BigQuery.DatasetOption*): Dataset =

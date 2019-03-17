@@ -4,7 +4,7 @@ import com.google.cloud.bigquery.DatasetId
 import org.scalatest.{MustMatchers, fixture}
 
 class FakeDatasetSpec extends fixture.FunSpec with MustMatchers with ServiceFixture {
-  def withFakeDataset(fakeBigQuery: FakeBigQuery)(test: FakeDataset => Any) {
+  def withFakeDataset(fakeBigQuery: FakeBigQuery)(test: FakeDataset => Any): Unit = {
     test(new FakeDataset(fakeBigQuery, DatasetId.of("foo")))
   }
 

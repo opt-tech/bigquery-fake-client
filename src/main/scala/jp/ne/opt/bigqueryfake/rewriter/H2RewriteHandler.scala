@@ -48,7 +48,7 @@ class H2RewriteHandler extends RewriteHandler {
 
             val statement = CCJSqlParserUtil.parse(s"$expr1 UNION $expr2")
             select.setSelectBody(statement.asInstanceOf[Select].getSelectBody)
-          case join =>
+          case _ =>
         }
       case _ =>
     }

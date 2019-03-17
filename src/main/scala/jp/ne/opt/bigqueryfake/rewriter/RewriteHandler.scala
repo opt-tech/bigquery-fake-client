@@ -460,7 +460,4 @@ class RewriteHandler extends SelectVisitor
 
   private def unquote(string: String): String =
     string.replaceFirst("^`([^`]+)`$", "$1")
-
-  private def quote(string: String): String =
-    s"`$string`"
 }

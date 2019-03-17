@@ -27,7 +27,7 @@ val schema = Schema.of(Field.of("text", LegacySQLTypeName.STRING))
 val tableDefinition = StandardTableDefinition.newBuilder.setSchema(schema).build
 bigQuery.create(TableInfo.of(TableId.of("dataset", "table"), tableDefinition))
 
-bigQuery.insertAll(InsertAllRequest.of("dataset", "table", Seq(InsertAllRequest.RowToInsert.of("dummy_id", Map("text" -> "aaa").asJava)).toIterable.asJava))
+bigQuery.insertAll(InsertAllRequest.of("dataset", "table", Seq(InsertAllRequest.RowToInsert.of("dummy_id", Map("text" -> "aaa").asJava)).asJava))
 val result = bigQuery.query(QueryJobConfiguration.of("select * from dataset.table"))
 result.getValues.asScala // => Wrappers([FieldValue{attribute=PRIMITIVE, value=aaa}])
 ```
@@ -39,7 +39,7 @@ import jp.ne.opt.bigqueryfake._
 
 Class.forName("org.postgresql.Driver")
 val conn = java.sql.DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/bigqueryfake?user=postgres")
-val bigQuery = FakeBigQueryOptions.newBuilder.setConnection(conn).build.getService
+val bigQuery = FakeBigQueryOptions.newBuilder.setConnection(conn).build().getService
 ```
 
 ## License

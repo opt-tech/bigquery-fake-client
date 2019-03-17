@@ -1,19 +1,18 @@
 package jp.ne.opt.bigqueryfake
 
-import java.sql.{JDBCType, Timestamp}
+import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import com.google.cloud.bigquery._
 
 import scala.collection.JavaConverters._
-import scala.util.{Failure, Success, Try}
 
 class RowInserter(fakeBigQuery: FakeBigQuery, tableId: TableId) {
-  val fakeTable = FakeTable(fakeBigQuery, tableId)
-  val table = fakeTable.get.getOrElse(throw new BigQueryException(404, s"Table not found: ${fakeTable.tableName}"))
-  val tableDefinition = table.getDefinition[StandardTableDefinition]
-  val partitioned = tableDefinition.getTimePartitioning != null &&
+  private val fakeTable = FakeTable(fakeBigQuery, tableId)
+  private val table = fakeTable.get.getOrElse(throw new BigQueryException(404, s"Table not found: ${fakeTable.tableName}"))
+  private val tableDefinition = table.getDefinition[StandardTableDefinition]
+  private val partitioned = tableDefinition.getTimePartitioning != null &&
     tableDefinition.getTimePartitioning.getType == TimePartitioning.Type.DAY
 
   def insert(rows: Seq[Map[String, Any]]): Int = {
@@ -50,7 +49,7 @@ class RowInserter(fakeBigQuery: FakeBigQuery, tableId: TableId) {
     }
     val result = preparedStatement.executeBatch()
     preparedStatement.close()
-    result.reduce(_ + _)
+    result.sum
   }
 }
 

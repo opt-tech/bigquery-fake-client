@@ -1,7 +1,7 @@
 package jp.ne.opt.bigqueryfake
 
 import java.math.BigDecimal
-import java.sql.{PreparedStatement, ResultSet}
+import java.sql.PreparedStatement
 import java.sql.Types._
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, DateTimeParseException}
@@ -22,9 +22,9 @@ trait DateTimeParser {
   protected def parseDateTime(str: String): Try[LocalDateTime] = Try {
     LocalDateTime.parse(str)
   } recover {
-    case e: DateTimeParseException => LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS+00:00"))
+    case _: DateTimeParseException => LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS+00:00"))
   } recover {
-    case e: DateTimeParseException => LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME)
+    case _: DateTimeParseException => LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME)
   }
 }
 
@@ -74,12 +74,12 @@ object FieldType {
   )
 
   def of(legacySQLType: LegacySQLTypeName): FieldType = {
-    values.find(_.bigQueryType == legacySQLType).getOrElse(throw new TypeMappingException(s"Unknown LegacySQLTypeName: $legacySQLType"))
+    values.find(_.bigQueryType == legacySQLType).getOrElse(throw TypeMappingException(s"Unknown LegacySQLTypeName: $legacySQLType"))
   }
   def of(standardSQLType: StandardSQLTypeName): FieldType = {
-    values.find(_.bigQueryType.getStandardType == standardSQLType).getOrElse(throw new TypeMappingException(s"Unknown StandardSQLTypeName: $standardSQLType"))
+    values.find(_.bigQueryType.getStandardType == standardSQLType).getOrElse(throw TypeMappingException(s"Unknown StandardSQLTypeName: $standardSQLType"))
   }
   def of(jdbcType: Int): FieldType = {
-    values.find(_.jdbcTypes.exists(_ == jdbcType)).getOrElse(throw new TypeMappingException(s"Unknown JDBC type: $jdbcType"))
+    values.find(_.jdbcTypes.exists(_ == jdbcType)).getOrElse(throw TypeMappingException(s"Unknown JDBC type: $jdbcType"))
   }
 }

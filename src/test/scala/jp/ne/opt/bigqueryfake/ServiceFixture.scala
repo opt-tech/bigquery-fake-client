@@ -1,6 +1,6 @@
 package jp.ne.opt.bigqueryfake
 
-import java.sql.DriverManager
+import java.sql.{Connection, DriverManager}
 
 import org.scalatest.{Informing, Outcome, fixture}
 
@@ -8,7 +8,7 @@ trait ServiceFixture { self: fixture.TestSuite with Informing =>
 
   type FixtureParam = FakeBigQuery
 
-  val conn = sys.env.get("POSTGRES_URL").map { url =>
+  val conn: Option[Connection] = sys.env.get("POSTGRES_URL").map { url =>
     Class.forName("org.postgresql.Driver")
     DriverManager.getConnection(url)
   }

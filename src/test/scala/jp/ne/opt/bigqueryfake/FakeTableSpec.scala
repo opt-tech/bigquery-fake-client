@@ -6,7 +6,7 @@ import org.scalatest.{MustMatchers, fixture}
 import scala.collection.JavaConverters._
 
 class FakeTableSpec extends fixture.FunSpec with MustMatchers with ServiceFixture {
-  def withFakeTable(fakeBigQuery: FakeBigQuery)(test: FakeTable => Any) {
+  def withFakeTable(fakeBigQuery: FakeBigQuery)(test: FakeTable => Any): Unit = {
     fakeBigQuery.queryHelper.execute("CREATE SCHEMA IF NOT EXISTS bigqueryfake;")
     test(new FakeTable(fakeBigQuery, TableId.of("bigqueryfake", "test")))
   }
@@ -77,7 +77,7 @@ class FakeTableSpec extends fixture.FunSpec with MustMatchers with ServiceFixtur
 
   describe("list") {
     it("returns all tables") { fakeBigQuery =>
-      withFakeTable(fakeBigQuery) { fakeTable =>
+      withFakeTable(fakeBigQuery) { _ =>
         fakeBigQuery.queryHelper.execute("CREATE TABLE bigqueryfake.nonpartitioned (name VARCHAR(65536));")
         fakeBigQuery.queryHelper.execute("CREATE TABLE bigqueryfake.partitioned (name VARCHAR(65536), _PARTITIONTIME timestamp);")
         FakeTable.list(fakeBigQuery, DatasetId.of("bigqueryfake")).map(_.getTableId.getTable).toSet mustBe Set("nonpartitioned", "partitioned")

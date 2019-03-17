@@ -1,6 +1,5 @@
 package jp.ne.opt.bigqueryfake.rewriter
 
-import java.sql.Connection
 
 sealed trait RewriteMode {
   def handler: RewriteHandler

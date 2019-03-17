@@ -7,7 +7,7 @@ import com.google.cloud.storage.BlobInfo
 import org.scalatest.{MustMatchers, fixture}
 
 class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with ServiceFixture {
-  def withFakeTable(fakeBigQuery: FakeBigQuery, tableDefinition: TableDefinition)(test: FakeTable => Any) {
+  def withFakeTable(fakeBigQuery: FakeBigQuery, tableDefinition: TableDefinition)(test: FakeTable => Any): Unit = {
     fakeBigQuery.queryHelper.execute("CREATE SCHEMA IF NOT EXISTS bigqueryfake;")
     val fakeTable = new FakeTable(fakeBigQuery, TableId.of("bigqueryfake", "test"))
     fakeTable.create(tableDefinition)
@@ -30,7 +30,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with ServiceFixt
       val path = s"temporary/${UUID.randomUUID()}"
       withFakeTable(fakeBigQuery, tableDefinition) { fakeTable =>
         fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
-        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.json()).build
+        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://$bucket/$path", FormatOptions.json()).build
         val fakeJob = new FakeLoadJob(fakeBigQuery, loadJobConfiguration).create()
         fakeJob.getStatus.getState mustBe JobStatus.State.DONE
         fakeBigQuery.queryHelper.listValues(
@@ -52,7 +52,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with ServiceFixt
       val path = s"temporary/${UUID.randomUUID()}"
       withFakeTable(fakeBigQuery, tableDefinition) { fakeTable =>
         fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
-        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.csv()).build
+        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://$bucket/$path", FormatOptions.csv()).build
         an [UnsupportedOperationException] mustBe thrownBy { new FakeLoadJob(fakeBigQuery, loadJobConfiguration).create() }
       }
     }
@@ -70,7 +70,7 @@ class FakeLoadJobSpec extends fixture.FunSpec with MustMatchers with ServiceFixt
       val path = s"temporary/${UUID.randomUUID()}"
       withFakeTable(fakeBigQuery, tableDefinition) { fakeTable =>
         fakeBigQuery.storage.create(BlobInfo.newBuilder(bucket, path).build(), json.getBytes("UTF-8"))
-        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://${bucket}/${path}", FormatOptions.json()).build
+        val loadJobConfiguration = LoadJobConfiguration.newBuilder(fakeTable.tableId, s"gs://$bucket/$path", FormatOptions.json()).build
         an [BigQueryException] mustBe thrownBy { new FakeLoadJob(fakeBigQuery, loadJobConfiguration).create() }
       }
     }
