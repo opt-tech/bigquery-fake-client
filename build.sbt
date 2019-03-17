@@ -1,11 +1,11 @@
 import Dependencies._
 import Helpers._
 
-val scala210 = "2.10.7"
+val scala211 = "2.11.12"
 
-scalaVersion := scala210
+scalaVersion := scala211
 
-crossScalaVersions := Seq(scala210, "2.11.12", "2.12.8")
+crossScalaVersions := Seq(scala211, "2.12.8")
 
 name := "bigquery-fake-client"
 
@@ -22,7 +22,7 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
-  (if (scalaVersion.value.startsWith("2.10")) Nil else compileScope(parser)) ++
+  compileScope(parser) ++
   testScope(postgres, h2, scalatest) ++
   providedScope(postgres, h2))
 
