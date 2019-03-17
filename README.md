@@ -6,7 +6,13 @@ bigquery-fake-client imitates Google's BigQuery with help of an RDB backends(H2,
 
 ## Installation
 
-Check out git repository and build locally until upcoming Maven release:
+Add this to your build.sbt:
+
+```
+"jp.ne.opt" %% "bigquery-fake-client" % "0.1.0"
+```
+
+or check out and build locally:
 
 ```bash
 $ sbt +publishLocal

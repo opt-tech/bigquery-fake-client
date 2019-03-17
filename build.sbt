@@ -13,7 +13,7 @@ licenses += "Apache 2" -> url("https://raw.githubusercontent.com/opt-tech/bigque
 
 organization := "jp.ne.opt"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.1.0"
 
 scalacOptions ++= Seq(
   "-deprecation",
@@ -27,3 +27,4 @@ libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
   providedScope(postgres, h2))
 
 publishMavenStyle := true
+publishTo := Some(Opts.resolver.sonatypeStaging)
