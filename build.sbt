@@ -28,3 +28,7 @@ libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
 
 publishMavenStyle := true
 publishTo := Some(Opts.resolver.sonatypeStaging)
+
+mimaPreviousArtifacts := CrossVersion.partialVersion(scalaVersion.value).collect { case (epoch, minor) =>
+  Set(organization.value % s"${name.value}_${epoch}.${minor}" % "0.1.0")
+}.get
