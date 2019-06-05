@@ -79,6 +79,8 @@ class FakeStorage extends Storage {
 
   override def writer(blobInfo: BlobInfo, options: Storage.BlobWriteOption*): WriteChannel = ???
 
+  override def writer(signedURL: URL): WriteChannel = ???
+
   override def signUrl(blobInfo: BlobInfo, duration: Long, unit: TimeUnit, options: Storage.SignUrlOption*): URL = ???
 
   override def get(blobIds: BlobId*): util.List[Blob] = ???

@@ -1,8 +1,8 @@
 import sbt._
 
 object Dependencies {
-  val bigquery = "com.google.cloud" % "google-cloud-bigquery" % "1.+"
-  val storage = "com.google.cloud" % "google-cloud-storage" % "1.+"
+  val bigquery = "com.google.cloud" % "google-cloud-bigquery" % "1.76.0"
+  val storage = "com.google.cloud" % "google-cloud-storage" % "1.76.0"
   val parser = "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
   val jsqlparser = "com.github.jsqlparser" % "jsqlparser" % "0.9.6"
   val postgres = "org.postgresql" % "postgresql" % "9.4.1211"

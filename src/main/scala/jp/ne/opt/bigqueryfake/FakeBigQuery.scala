@@ -1,6 +1,7 @@
 package jp.ne.opt.bigqueryfake
 
 import java.sql.Connection
+import java.util
 
 import com.google.api.gax.paging.Page
 import com.google.auth.oauth2.GoogleCredentials
@@ -115,4 +116,18 @@ class FakeBigQuery(val options: FakeBigQueryOptions) extends BigQuery {
       .build()
 
   private[bigqueryfake] val queryHelper = new QueryHelper(conn)
+
+  override def delete(modelId: ModelId): Boolean = ???
+
+  override def update(modelInfo: ModelInfo, options: BigQuery.ModelOption*): Model = ???
+
+  override def getModel(datasetId: String, modelId: String, options: BigQuery.ModelOption*): Model = ???
+
+  override def getModel(tableId: ModelId, options: BigQuery.ModelOption*): Model = ???
+
+  override def listModels(datasetId: String, options: BigQuery.ModelListOption*): Page[Model] = ???
+
+  override def listModels(datasetId: DatasetId, options: BigQuery.ModelListOption*): Page[Model] = ???
+
+  override def listPartitions(tableId: TableId): util.List[String] = ???
 }
