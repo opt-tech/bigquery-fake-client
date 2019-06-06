@@ -9,4 +9,7 @@ object Dependencies {
   val h2 = "com.h2database" % "h2" % "1.4.193"
   val jawn = "org.spire-math" %% "jawn-ast" % "0.10.4"
   val scalatest = "org.scalatest" %% "scalatest" % "3.0.0"
+  val junit = "junit" % "junit" % "4.12"
+  val junitInterface = "com.novocode" % "junit-interface" % "0.11"
+  val mockito = "org.mockito" % "mockito-core" % "2.28.2"
 }

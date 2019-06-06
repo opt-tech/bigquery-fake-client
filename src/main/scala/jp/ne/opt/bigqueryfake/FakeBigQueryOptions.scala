@@ -36,6 +36,11 @@ object FakeBigQueryOptions {
       this
     }
 
+    def setRewriteMode(rewriteMode: String): Builder = {
+      this.rewriteMode = RewriteMode.valueOf(rewriteMode)
+      this
+    }
+
     def setStorage(storage: Storage): Builder = {
       this.storage = storage
       this

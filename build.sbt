@@ -1,5 +1,6 @@
 import Dependencies._
 import Helpers._
+import com.typesafe.tools.mima.core.{ProblemFilters, ReversedMissingMethodProblem}
 
 val scala211 = "2.11.12"
 
@@ -23,7 +24,7 @@ scalacOptions ++= Seq(
 
 libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
   compileScope(parser) ++
-  testScope(postgres, h2, scalatest) ++
+  testScope(postgres, h2, scalatest, junit, junitInterface exclude("junit", "junit-dep"), mockito) ++
   providedScope(postgres, h2))
 
 publishMavenStyle := true
@@ -32,3 +33,6 @@ publishTo := Some(Opts.resolver.sonatypeStaging)
 mimaPreviousArtifacts := CrossVersion.partialVersion(scalaVersion.value).collect { case (epoch, minor) =>
   Set(organization.value % s"${name.value}_${epoch}.${minor}" % "0.1.0")
 }.get
+mimaBinaryIssueFilters ++= Seq(
+  ProblemFilters.exclude[ReversedMissingMethodProblem]("jp.ne.opt.bigqueryfake.rewriter.RewriteMode.matches")
+)
