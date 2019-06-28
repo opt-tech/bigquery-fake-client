@@ -2,11 +2,13 @@ import Dependencies._
 import Helpers._
 import com.typesafe.tools.mima.core.{ProblemFilters, ReversedMissingMethodProblem}
 
+fork in Test := true
+
 val scala211 = "2.11.12"
 
 scalaVersion := scala211
 
-crossScalaVersions := Seq(scala211, "2.12.8")
+crossScalaVersions := Seq(scala211, "2.12.8", "2.13.0")
 
 name := "bigquery-fake-client"
 
@@ -30,9 +32,15 @@ libraryDependencies ++= (compileScope(bigquery, storage, jawn, jsqlparser) ++
 publishMavenStyle := true
 publishTo := Some(Opts.resolver.sonatypeStaging)
 
-mimaPreviousArtifacts := CrossVersion.partialVersion(scalaVersion.value).collect { case (epoch, minor) =>
-  Set(organization.value % s"${name.value}_${epoch}.${minor}" % "0.1.0")
-}.get
+mimaPreviousArtifacts ++= {
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, v)) if v >= 13 =>
+      Set.empty
+    case Some((epoch, minor)) =>
+      Set(organization.value % s"${name.value}_${epoch}.${minor}" % "0.1.0")
+  }
+}
+
 mimaBinaryIssueFilters ++= Seq(
   ProblemFilters.exclude[ReversedMissingMethodProblem]("jp.ne.opt.bigqueryfake.rewriter.RewriteMode.matches")
 )

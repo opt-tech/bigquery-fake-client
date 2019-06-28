@@ -5,8 +5,8 @@ import java.nio.charset.StandardCharsets
 
 import com.google.cloud.bigquery.JobInfo.CreateDisposition
 import com.google.cloud.bigquery._
-import jawn.ast._
-import jawn.{Facade, Parser}
+import org.typelevel.jawn.ast._
+import org.typelevel.jawn.{Facade, Parser}
 
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success}
@@ -53,6 +53,6 @@ class FakeLoadJob(fakeBigQuery: FakeBigQuery, config: LoadJobConfiguration) {
         fakeBigQuery.storage.readAllBytes(uri.getHost, uri.getPath.replaceFirst("^/", "")),
         StandardCharsets.UTF_8
       ).split("[\r\n]+")
-    }
+    }.toSeq
 }
 
