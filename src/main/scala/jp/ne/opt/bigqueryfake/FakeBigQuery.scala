@@ -75,7 +75,7 @@ class FakeBigQuery(val options: FakeBigQueryOptions) extends BigQuery {
 
   override def insertAll(request: InsertAllRequest): InsertAllResponse = {
     new RowInserter(this, request.getTable)
-      .insert(request.getRows.asScala.map(_.getContent.asScala.toMap))
+      .insert(request.getRows.asScala.map(_.getContent.asScala.toMap).toSeq)
     FakeBuilder.newInsertAllResponse(Map.empty)
   }
 
