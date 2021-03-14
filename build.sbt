@@ -8,7 +8,7 @@ val scala211 = "2.11.12"
 
 scalaVersion := scala211
 
-crossScalaVersions := Seq(scala211, "2.12.8", "2.13.0")
+crossScalaVersions := Seq(scala211, "2.12.13", "2.13.5")
 
 name := "bigquery-fake-client"
 
