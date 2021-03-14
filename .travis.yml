@@ -2,15 +2,15 @@ language: scala
 
 scala:
   - 2.11.12
-  - 2.12.8
-  - 2.13.0
+  - 2.12.13
+  - 2.13.5
 
 jdk:
   - openjdk8
 
 matrix:
   include:
-    - scala: 2.12.8
+    - scala: 2.12.13
       jdk: openjdk8
       env: POSTGRES_URL=jdbc:postgresql://127.0.0.1:5432/bigqueryfake?user=postgres
 
